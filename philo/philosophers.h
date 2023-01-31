@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 10:34:12 by kristori          #+#    #+#             */
-/*   Updated: 2023/01/31 11:47:03 by kristori         ###   ########.fr       */
+/*   Updated: 2023/01/31 15:16:33 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ typedef struct s_philosopher {
 }			t_philosopher;
 
 int	ft_atoi(const char *str);
-long long	current_timestamp(void);
+long long	ft_current_timestamp(struct timeval *start);
 
 #endif
