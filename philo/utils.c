@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 11:40:50 by kristori          #+#    #+#             */
-/*   Updated: 2023/01/31 15:16:26 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/01 15:08:25 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,10 @@ long long	ft_current_timestamp(struct timeval *start)
 	start_milliseconds = start->tv_sec * 1000LL + start->tv_usec / 1000;
 	now = te.tv_sec * 1000LL + te.tv_usec / 1000;
 	return (now - start_milliseconds);
+}
+
+int	ft_error_argv(void)
+{
+	printf("Not enough arguments provided\n");
+	return (1);
 }
