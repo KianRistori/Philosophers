@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 10:34:12 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/01 15:08:43 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/02 14:27:38 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,16 @@ typedef struct s_philosopher {
 	int				time_to_sleep;
 	int				num_philosophers;
 	int				num_eat;
+	struct timeval	last_eaten;
 	pthread_mutex_t	*forks;
 	pthread_t		thread;
 }			t_philosopher;
 
+void		ft_init(t_philosopher *philosophers, pthread_mutex_t *forks,
+				int argc, char **argv);
 void		*ft_philosopher(void *arg);
 int			ft_atoi(const char *str);
 long long	ft_current_timestamp(struct timeval *start);
-void		ft_init(t_philosopher *philosophers, pthread_mutex_t *forks,
-				int argc, char **argv);
 int			ft_error_argv(void);
 
 #endif

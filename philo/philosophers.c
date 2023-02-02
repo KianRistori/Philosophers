@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 12:24:39 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/01 15:07:30 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/02 14:58:21 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,21 @@
 void	*ft_philosopher(void *arg)
 {
 	t_philosopher *philo = (t_philosopher *)arg;
-	struct timeval	start;
+	struct timeval	start, current;
 	gettimeofday(&start, NULL);
+	gettimeofday(&current, NULL);
+	gettimeofday(&philo->last_eaten, NULL);
 	while (1)
 	{
 		if ((philo->times_eaten >= philo->num_eat) && (philo->num_eat != 0))
 		{
-			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
-			return NULL;
+			return (NULL);
 		}
-		if ((philo->time_to_eat + philo->time_to_sleep) >= philo->time_to_die)
+		gettimeofday(&current, NULL);
+		long long int time_since_last_eat = (current.tv_sec - philo->last_eaten.tv_sec) * 1000LL +
+			(current.tv_usec - philo->last_eaten.tv_usec) / 1000;
+		printf("time last eat: %lld\n", time_since_last_eat);
+		if (time_since_last_eat >= philo->time_to_die)
 		{
 			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
 			return NULL;
@@ -33,16 +38,18 @@ void	*ft_philosopher(void *arg)
 		pthread_mutex_lock(philo->forks + (philo->id + 1) % philo->num_philosophers);
 		printf("%lldms %d has taken a fork\n", ft_current_timestamp(&start), philo->id);
 		printf("%lldms %d is eating\n", ft_current_timestamp(&start), philo->id);
-		usleep(philo->times_eaten * 1000);
+		gettimeofday(&philo->last_eaten, NULL);
+		usleep(philo->time_to_eat * 1000LL);
 		printf("%lldms %d has finished eating\n", ft_current_timestamp(&start), philo->id);
 		philo->times_eaten++;
 		pthread_mutex_unlock(philo->forks + (philo->id + 1) % philo->num_philosophers);
 		pthread_mutex_unlock(philo->forks + philo->id);
 		printf("%lldms %d is sleeping\n", ft_current_timestamp(&start), philo->id);
-		usleep(philo->time_to_sleep * 1000);
+		usleep(philo->time_to_sleep * 1000LL);
 		printf("%lldms %d is thinking\n", ft_current_timestamp(&start), philo->id);
 	}
 }
+
 
 int	main(int argc, char **argv)
 {
@@ -53,8 +60,8 @@ int	main(int argc, char **argv)
 	if (argc < 5)
 		return (ft_error_argv());
 	num_philosophers = ft_atoi(argv[1]);
-	t_philosopher *philosophers = (t_philosopher *)malloc(sizeof(t_philosopher) * num_philosophers);
-	pthread_mutex_t *forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * num_philosophers);
+	t_philosopher *philosophers = (t_philosopher *)malloc(sizeof(t_philosopher) * num_philosophers + 1);
+	pthread_mutex_t *forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * num_philosophers + 1);
 	while (++i < num_philosophers)
 		pthread_mutex_init(forks + i, NULL);
 	i = -1;
@@ -67,7 +74,7 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < num_philosophers)
 		pthread_mutex_destroy(&forks[i]);
-	free(forks);
 	free(philosophers);
+	free(forks);
 	return (0);
 }
