@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:27:38 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/02 14:33:05 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/03 12:12:43 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_init(t_philosopher *philosophers, pthread_mutex_t *forks,
 	i = 0;
 	while (i < philo.num_philosophers)
 	{
-		philosophers[i].id = i + 1;
+		philosophers[i].id = i;
 		philosophers[i].times_eaten = 0;
 		philosophers[i].time_to_die = philo.time_to_die;
 		philosophers[i].time_to_eat = philo.time_to_eat;
@@ -37,6 +37,18 @@ void	ft_init(t_philosopher *philosophers, pthread_mutex_t *forks,
 		philosophers[i].num_philosophers = philo.num_philosophers;
 		philosophers[i].num_eat = philo.num_eat;
 		philosophers[i].forks = forks;
+		i++;
+	}
+}
+
+void	ft_init_program(t_philosopher *philosophers, t_program *program)
+{
+	int	i;
+
+	i = 0;
+	while (i < philosophers[0].num_philosophers)
+	{
+		philosophers[i].program = program;
 		i++;
 	}
 }

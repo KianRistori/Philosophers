@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 12:24:39 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/02 14:58:21 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/03 12:23:00 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,35 +19,38 @@ void	*ft_philosopher(void *arg)
 	gettimeofday(&start, NULL);
 	gettimeofday(&current, NULL);
 	gettimeofday(&philo->last_eaten, NULL);
-	while (1)
+	while (philo->program->run != 1)
 	{
 		if ((philo->times_eaten >= philo->num_eat) && (philo->num_eat != 0))
 		{
+			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
+			philo->program->run = 1;
 			return (NULL);
 		}
 		gettimeofday(&current, NULL);
 		long long int time_since_last_eat = (current.tv_sec - philo->last_eaten.tv_sec) * 1000LL +
 			(current.tv_usec - philo->last_eaten.tv_usec) / 1000;
-		printf("time last eat: %lld\n", time_since_last_eat);
 		if (time_since_last_eat >= philo->time_to_die)
 		{
 			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
-			return NULL;
+			philo->program->run = 1;
+			return (NULL);
 		}
 		pthread_mutex_lock(philo->forks + philo->id);
 		pthread_mutex_lock(philo->forks + (philo->id + 1) % philo->num_philosophers);
 		printf("%lldms %d has taken a fork\n", ft_current_timestamp(&start), philo->id);
 		printf("%lldms %d is eating\n", ft_current_timestamp(&start), philo->id);
 		gettimeofday(&philo->last_eaten, NULL);
-		usleep(philo->time_to_eat * 1000LL);
+		usleep(philo->time_to_eat * 1000);
 		printf("%lldms %d has finished eating\n", ft_current_timestamp(&start), philo->id);
 		philo->times_eaten++;
 		pthread_mutex_unlock(philo->forks + (philo->id + 1) % philo->num_philosophers);
 		pthread_mutex_unlock(philo->forks + philo->id);
 		printf("%lldms %d is sleeping\n", ft_current_timestamp(&start), philo->id);
-		usleep(philo->time_to_sleep * 1000LL);
+		usleep(philo->time_to_sleep * 1000);
 		printf("%lldms %d is thinking\n", ft_current_timestamp(&start), philo->id);
 	}
+	return (NULL);
 }
 
 
@@ -65,7 +68,10 @@ int	main(int argc, char **argv)
 	while (++i < num_philosophers)
 		pthread_mutex_init(forks + i, NULL);
 	i = -1;
+	t_program program;
+	program.run = 0;
 	ft_init(philosophers, forks, argc, argv);
+	ft_init_program(philosophers, &program);
 	while (++i < num_philosophers)
 		pthread_create(&philosophers[i].thread, NULL, ft_philosopher, &philosophers[i]);
 	i = -1;
