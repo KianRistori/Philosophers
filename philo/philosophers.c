@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 12:24:39 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/03 12:23:00 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/04 11:53:29 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,40 @@ void	*ft_philosopher(void *arg)
 {
 	t_philosopher *philo = (t_philosopher *)arg;
 	struct timeval	start, current;
+	pthread_mutex_t	run_mutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_t	times_eaten_mutex = PTHREAD_MUTEX_INITIALIZER;
 	gettimeofday(&start, NULL);
 	gettimeofday(&current, NULL);
 	gettimeofday(&philo->last_eaten, NULL);
-	while (philo->program->run != 1)
+	while (1)
 	{
+		pthread_mutex_lock(&run_mutex);
+		if (philo->program->run == 1)
+		{
+			pthread_mutex_unlock(&run_mutex);
+			break;
+		}
+		pthread_mutex_unlock(&run_mutex);
+		pthread_mutex_lock(&times_eaten_mutex);
 		if ((philo->times_eaten >= philo->num_eat) && (philo->num_eat != 0))
 		{
 			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
+			pthread_mutex_lock(&run_mutex);
 			philo->program->run = 1;
+			pthread_mutex_unlock(&run_mutex);
+			pthread_mutex_unlock(&times_eaten_mutex);
 			return (NULL);
 		}
+		pthread_mutex_unlock(&times_eaten_mutex);
 		gettimeofday(&current, NULL);
 		long long int time_since_last_eat = (current.tv_sec - philo->last_eaten.tv_sec) * 1000LL +
 			(current.tv_usec - philo->last_eaten.tv_usec) / 1000;
 		if (time_since_last_eat >= philo->time_to_die)
 		{
 			printf("%lldms %d has died\n", ft_current_timestamp(&start), philo->id);
+			pthread_mutex_lock(&run_mutex);
 			philo->program->run = 1;
+			pthread_mutex_unlock(&run_mutex);
 			return (NULL);
 		}
 		pthread_mutex_lock(philo->forks + philo->id);
