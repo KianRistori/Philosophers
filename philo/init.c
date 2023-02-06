@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 14:27:38 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/03 12:12:43 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/06 12:48:30 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,16 @@ void	ft_init(t_philosopher *philosophers, pthread_mutex_t *forks,
 	}
 }
 
-void	ft_init_program(t_philosopher *philosophers, t_program *program)
+void	ft_init_2(t_philosopher *philosophers, pthread_mutex_t *times_eaten_mutex, pthread_mutex_t *run_mutex)
 {
 	int	i;
 
 	i = 0;
 	while (i < philosophers[0].num_philosophers)
 	{
-		philosophers[i].program = program;
+		philosophers[i].run = 0;
+		philosophers[i].times_eaten_mutex = times_eaten_mutex;
+		philosophers[i].run_mutex = run_mutex;
 		i++;
 	}
 }
