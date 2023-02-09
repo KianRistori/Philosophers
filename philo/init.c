@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:08:22 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/08 15:31:22 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/09 14:57:13 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_check_params(const t_param *params)
 	return (0);
 }
 
-int	ft_get_params(int argc, char **argv, t_param *params)
+int	ft_init_params(int argc, char **argv, t_param *params)
 {
 	if (argc != 5 && argc != 6)
 	{
@@ -47,18 +47,18 @@ int	ft_init_mutex(t_param *param)
 
 	param->forks = malloc(sizeof(pthread_mutex_t) * param->num_of_philo);
 	if (param->forks == NULL)
-		return (ft_error(1));
+		return (1);
 	i = 0;
 	while (i < param->num_of_philo)
 	{
 		if (pthread_mutex_init(&param->forks[i], NULL))
-			return (ft_error(2));
+			return (1);
 		i++;
 	}
 	if (pthread_mutex_init(&param->eating, NULL))
-		return (ft_error(2));
+		return (1);
 	if (pthread_mutex_init(&param->printing, NULL))
-		return (ft_error(2));
+		return (1);
 	return (0);
 }
 
@@ -68,7 +68,7 @@ int	ft_init_philo(t_param *params)
 
 	params->philosophers = malloc(sizeof(t_philosopher) * params->num_of_philo);
 	if (params->philosophers == NULL)
-		return (ft_error(1));
+		return (1);
 	i = 0;
 	while (i < params->num_of_philo)
 	{

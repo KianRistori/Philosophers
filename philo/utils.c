@@ -6,22 +6,11 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:08:53 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/08 15:30:56 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/09 14:57:18 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-int	ft_error(int err)
-{
-	if (err == 1)
-		printf("Malloc error\n");
-	else if (err == 2)
-		printf("Mutex error\n");
-	else if (err == 3)
-		printf("Error during creating thread\n");
-	return (1);
-}
 
 int	ft_atoi(const char *str)
 {

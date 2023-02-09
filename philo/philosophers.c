@@ -6,7 +6,7 @@
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:08:31 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/08 15:32:58 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/09 16:28:42 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,13 @@
 
 void	ft_philo_eat(t_philosopher *philo)
 {
-	pthread_mutex_lock(philo->left);
-	ft_print_active(philo->id, philo->params, "has taken left fork");
-	pthread_mutex_lock(philo->right);
-	ft_print_active(philo->id, philo->params, "has taken right fork");
-	pthread_mutex_lock(&philo->params->eating);
-	ft_print_active(philo->id, philo->params, "is eating");
-	philo->last_meal = ft_get_time() - philo->params->start_time;
-	pthread_mutex_unlock(&philo->params->eating);
-	usleep(philo->params->time_to_eat * 1000);
-	philo->meals_count++;
-	pthread_mutex_unlock(philo->left);
-	pthread_mutex_unlock(philo->right);
+	if (philo->id % 2 == 0)
+		ft_eat_left(philo);
+	else
+		ft_eat_right(philo);
 }
 
-void	*ft_philo_life(void *args)
+void	*ft_philo_routine(void *args)
 {
 	t_philosopher	*philo;
 	t_param			*params;
@@ -47,14 +39,14 @@ void	*ft_philo_life(void *args)
 	return (NULL);
 }
 
-void	ft_end_routine(t_param *params)
+void	ft_create_thread2(t_param *params)
 {
 	int	i;
 
 	i = 0;
 	while (i < params->num_of_philo)
 	{
-		pthread_join(params->philosophers[i].thread_philo, NULL);
+		pthread_join(params->philosophers[i].thread, NULL);
 		i++;
 	}
 	i = 0;
@@ -69,7 +61,7 @@ void	ft_end_routine(t_param *params)
 	free(params->philosophers);
 }
 
-int	ft_routine(t_param *params)
+int	ft_create_thread(t_param *params)
 {
 	int				i;
 	t_philosopher	*philo;
@@ -79,12 +71,13 @@ int	ft_routine(t_param *params)
 	params->start_time = ft_get_time();
 	while (i < params->num_of_philo)
 	{
-		if (pthread_create(&philo[i].thread_philo, NULL, ft_philo_life, &philo[i]))
-			return (ft_error(3));
+		if (pthread_create(&philo[i].thread,
+				NULL, ft_philo_routine, &philo[i]))
+			return (1);
 		i++;
 	}
 	ft_checker(params);
-	ft_end_routine(params);
+	ft_create_thread2(params);
 	return (0);
 }
 
@@ -92,13 +85,13 @@ int	main(int argc, char **argv)
 {
 	t_param		params;
 
-	if (ft_get_params(argc, argv, &params))
+	if (ft_init_params(argc, argv, &params))
 		return (1);
 	if (ft_init_mutex(&params))
 		return (1);
 	if (ft_init_philo(&params))
 		return (1);
-	if (ft_routine(&params))
+	if (ft_create_thread(&params))
 		return (1);
 	return (0);
 }

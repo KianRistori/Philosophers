@@ -6,13 +6,13 @@
 #    By: kristori <kristori@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/31 10:40:20 by kristori          #+#    #+#              #
-#    Updated: 2023/02/08 15:27:22 by kristori         ###   ########.fr        #
+#    Updated: 2023/02/09 16:26:51 by kristori         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRC = philosophers.c utils.c timeprint.c checker.c init.c
+SRC = philosophers.c utils.c time.c checker.c init.c eat.c
 
 OBJ = $(SRC:.c=.o)
 

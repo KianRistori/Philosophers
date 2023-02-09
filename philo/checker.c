@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   watcher.c                                          :+:      :+:    :+:   */
+/*   checker.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kristori <kristori@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:08:58 by kristori          #+#    #+#             */
-/*   Updated: 2023/02/08 15:25:57 by kristori         ###   ########.fr       */
+/*   Updated: 2023/02/09 15:21:18 by kristori         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	ft_check_num_of_eat(t_param *params)
+void	ft_check_num_eat(t_param *params)
 {
 	int	i;
 	int	ct;
@@ -48,6 +48,6 @@ void	ft_checker(t_param *params)
 			i++;
 		}
 		if (params->num_of_eat != -1 && params->is_dead)
-			ft_check_num_of_eat(params);
+			ft_check_num_eat(params);
 	}
 }
